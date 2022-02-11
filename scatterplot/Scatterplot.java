@@ -48,6 +48,11 @@ public class Scatterplot extends JFrame{
         query4.setActionCommand("SELECT AGE , GPA , gender FROM cis2012");
         queries.add(query4);
 
+        JMenuItem query5 = new JMenuItem("Credits passed vs Age");
+        query5.addActionListener(contents);
+        query5.setActionCommand("SELECT CREDITS_PASSED , Age , gender FROM cis2012");
+        queries.add(query5);
+
         JMenuItem plot1 = new JMenuItem("Show Females");
         plot1.addActionListener(e->{
             contents.setGenderView(true);
