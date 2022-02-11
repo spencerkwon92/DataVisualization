@@ -1,0 +1,19 @@
+----------------------------------------------------------------
+Tue Jan 18 19:39:48 HST 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017e-70d9-2f62-00000f83c388 
+on database directory /Users/sungjin.spencerkwon/IdeaProjects/classCode/src/univ/cis/cs490/SQLprac/pollster with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@22d8cfe0 
+Loaded from file:/Users/sungjin.spencerkwon/opt/Apache/db-derby-10.14.2.0-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=16.0.1+9-24
+user.dir=/Users/sungjin.spencerkwon/IdeaProjects/classCode/src/univ/cis/cs490/SQLprac
+os.name=Mac OS X
+os.arch=x86_64
+os.version=11.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue Jan 18 19:42:36 HST 2022: Shutting down Derby engine
+----------------------------------------------------------------
+Tue Jan 18 19:42:36 HST 2022:
+Shutting down instance a816c00e-017e-70d9-2f62-00000f83c388 on database directory /Users/sungjin.spencerkwon/IdeaProjects/classCode/src/univ/cis/cs490/SQLprac/pollster with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@22d8cfe0 
+----------------------------------------------------------------
