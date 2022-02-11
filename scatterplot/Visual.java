@@ -155,7 +155,8 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             AffineTransform tran = new AffineTransform();
             tran.rotate(-Math.PI /2);
             g.setTransform(tran);
-            g.drawString(yName, -h/2, 25);
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.drawString(yName, -h/2-200, 30);
         }
 
         g.setTransform(defaultAt);
