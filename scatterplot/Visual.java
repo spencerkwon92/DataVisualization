@@ -149,6 +149,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             yIncreasement += yTerm;
         }
 
+        //Drawing axis name.
         AffineTransform defaultAt = g.getTransform();
         if(xName != null && yName != null){
             g.drawString(xName, w/2, realH+yGraphSpace-5);
