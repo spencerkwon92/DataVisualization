@@ -12,6 +12,7 @@ public class Axis {
  ColumnType type;
  List<String> stringData;
  List<Double> numberData;
+
  public Axis(String name,ColumnType t){
   columnName = name;
   type = t;
