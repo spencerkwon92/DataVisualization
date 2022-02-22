@@ -1,6 +1,7 @@
 package univ.cis.cs490.ParallelCoordination;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Axis {
@@ -16,5 +17,7 @@ public class Axis {
  public Axis(String name,ColumnType t){
   columnName = name;
   type = t;
+  stringData = new ArrayList<>();
+  numberData = new ArrayList<>();
  }
 }
