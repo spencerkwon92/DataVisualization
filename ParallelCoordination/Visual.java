@@ -6,10 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
 import java.sql.*;
 import java.util.*;
-import java.util.List;
 
 public class Visual extends JPanel implements ActionListener, MouseInputListener {
 
@@ -21,6 +19,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         datum = new ArrayList<>();
         ratiosDatum = new ArrayList<>();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         datum.clear();
@@ -56,7 +55,6 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             }
             con.close();
             getRatios(datum);
-
             repaint();
 
         }catch(SQLException se){
@@ -103,7 +101,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         int startX = 80;
         int startY = 15;
         int w = getWidth()-(startX*2);
-        int h = getHeight()-(startY*2);
+        int h = getHeight()-(startY*4);
         int letterW = 4;
         //Start to draw the X and Y Asix.
         int numOfCul = ratiosDatum.size();
@@ -116,17 +114,19 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             g.drawLine(x,startY,x,h); // Draw X axis.
             g.drawString(culName, (x-(letterW*size)),h+(startY)); // draw labels.
 
+            g.setColor(Color.RED);
             if(ratiosDatum.get(i).type == Axis.ColumnType.NUMERIC){
                 // draw yLabels...
                 int yStartPos = startY;
                 double yValuePosIncreament = h/4;
                 double startYlabel = datum.get(i).MaxMin[0];
-                double labelDecreament = (datum.get(i).MaxMin[0]-datum.get(i).MaxMin[1])/4;
+                double labelDecreament =(datum.get(i).MaxMin[0]-datum.get(i).MaxMin[1])/4;
+
                 g.drawString(String.valueOf(startYlabel), x+2, yStartPos);
                 for(int j=0; j<3; j++){
                     yStartPos += yValuePosIncreament;
                     startYlabel -= labelDecreament;
-                    g.drawString(String.valueOf(startYlabel), x+2, yStartPos);
+                    g.drawString(String.valueOf(Math.round(startYlabel*100.0)/100.0), x+2, yStartPos);
                 }
                 g.drawString(String.valueOf(datum.get(i).MaxMin[1]), x+2, h);
             }else{
@@ -136,6 +136,8 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
                 }
                 double yStartPos = h/(textCategory.size()+1);
                 double yIncreament = h/(textCategory.size()+1);
+
+                //converting the data for drawing...
                 for(String ele:textCategory){
                     g.drawString(ele, x+2, (int) yStartPos);
                     for(int j=0; j<ratiosDatum.get(i).stringData.size();j++){
@@ -149,26 +151,21 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             }
             xPoints[i] = x;
             x+=w/(numOfCul-1);
+            g.setColor(Color.BLACK);
         }
-
         for(int i=0; i<rowNum; i++){
             int[] yPoints = new int[numOfCul];
             for(int j=0; j<numOfCul; j++) {
                 if(ratiosDatum.get(j).type == Axis.ColumnType.NUMERIC){
-                    yPoints[j] = (int) (h - (ratiosDatum.get(j).numberData.get(i) * h)+startY);
+                    yPoints[j] = (int) (h - (ratiosDatum.get(j).numberData.get(i) * (h-startY)));
                 }else{
                     yPoints[j] = (int)(ratiosDatum.get(j).numberData.get(i)*1);
                 }
-
             }
-
-            System.out.println(Arrays.toString(yPoints));
             g.drawPolyline(xPoints, yPoints, numOfCul);
         }
 
      }
-
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
