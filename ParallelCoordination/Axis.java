@@ -13,11 +13,13 @@ public class Axis {
  ColumnType type;
  List<String> stringData;
  List<Double> numberData;
+ Double[] MaxMin;
 
  public Axis(String name,ColumnType t){
   columnName = name;
   type = t;
   stringData = new ArrayList<>();
   numberData = new ArrayList<>();
+  MaxMin = new Double[2];
  }
 }
