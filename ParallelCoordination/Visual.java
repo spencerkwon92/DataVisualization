@@ -6,23 +6,36 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.sql.*;
 import java.util.*;
+import java.util.List;
 
 public class Visual extends JPanel implements ActionListener, MouseInputListener {
 
     private ArrayList<Axis> datum;
     private ArrayList<Axis> ratiosDatum;
+    private List<CurvedLine> lines;
+    private List<Point2D> points;
     private int rowNum;
+    private Point mouseDown;
+    private Rectangle box;
+
 
     Visual(){
         datum = new ArrayList<>();
         ratiosDatum = new ArrayList<>();
+        lines = new ArrayList<>();
+        points = new ArrayList<>();
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         datum.clear();
+        lines.clear();
         rowNum = 0;
         String sql = e.getActionCommand();
         try{
@@ -106,7 +119,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         //Start to draw the X and Y Asix.
         int numOfCul = ratiosDatum.size();
         int x = startX;
-        int[] xPoints = new int[numOfCul];
+        double[] xPoints = new double[numOfCul];
 
         for(int i=0;i<numOfCul;i++){
             String culName = ratiosDatum.get(i).columnName;
@@ -153,18 +166,31 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             x+=w/(numOfCul-1);
             g.setColor(Color.BLACK);
         }
+        lines.clear();
         for(int i=0; i<rowNum; i++){
-            int[] yPoints = new int[numOfCul];
+            CurvedLine cl = new CurvedLine();
+//            points.clear();
             for(int j=0; j<numOfCul; j++) {
+                double point;
                 if(ratiosDatum.get(j).type == Axis.ColumnType.NUMERIC){
-                    yPoints[j] = (int) (h - (ratiosDatum.get(j).numberData.get(i) * (h-startY)));
+                    point = h - (ratiosDatum.get(j).numberData.get(i) * (h-startY));
                 }else{
-                    yPoints[j] = (int)(ratiosDatum.get(j).numberData.get(i)*1);
+                    point = ratiosDatum.get(j).numberData.get(i)*1;
                 }
+                cl.setPoint(new Point2D.Double(xPoints[j], point));
             }
-            g.drawPolyline(xPoints, yPoints, numOfCul);
+
+            lines.add(cl);
         }
 
+        for(CurvedLine ele:lines){
+            ele.draw(g);
+        }
+
+        if(box != null){
+            g.setColor(new Color(255,0,0,20));
+            g.fill(box);
+        }
      }
 
     @Override
@@ -174,12 +200,16 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        int x = e.getX();
+        int y = e.getY();
+        mouseDown = new Point(x,y );
+        box = new Rectangle();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        box = null;
+        repaint();
     }
 
     @Override
@@ -194,11 +224,13 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        box.setFrameFromDiagonal(mouseDown.x, mouseDown.y, e.getX(), e.getY());
+        repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
 
     }
 }
