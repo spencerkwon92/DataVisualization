@@ -82,7 +82,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         w = getWidth();
         h = getHeight();
 
-        int d = 4;
+        int d = 6;
         g.setColor(Color.BLACK);
 
         int xGraphSpace = 100;

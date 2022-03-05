@@ -16,20 +16,19 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
     private ArrayList<Axis> datum;
     private ArrayList<Axis> ratiosDatum;
     private List<CurvedLine> lines;
-    private List<Point2D> points;
     private int rowNum;
     private Point mouseDown;
     private Rectangle box;
-
+    private int w, h;
 
     Visual(){
         datum = new ArrayList<>();
         ratiosDatum = new ArrayList<>();
         lines = new ArrayList<>();
-        points = new ArrayList<>();
         addMouseListener(this);
         addMouseMotionListener(this);
-
+        w = 0;
+        h = 0;
     }
 
     @Override
@@ -78,7 +77,6 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
 
     public void getRatios(ArrayList<Axis> data){
         ratiosDatum.clear();
-
         for(Axis ele: data){
             Axis newData;
             if(ele.type == Axis.ColumnType.NUMERIC) {
@@ -110,11 +108,18 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
 
     @Override
     public void paintComponent(Graphics g1){
+
+        if(getWidth()!=w || getHeight()!=h){
+            h = getHeight();
+            w = getWidth();
+            lines.clear();
+        }
+
         Graphics2D g = (Graphics2D)g1;
         int startX = 80;
         int startY = 15;
-        int w = getWidth()-(startX*2);
-        int h = getHeight()-(startY*4);
+        int width = getWidth()-(startX*2);
+        int height = getHeight()-(startY*4);
         int letterW = 4;
         //Start to draw the X and Y Asix.
         int numOfCul = ratiosDatum.size();
@@ -124,14 +129,14 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         for(int i=0;i<numOfCul;i++){
             String culName = ratiosDatum.get(i).columnName;
             int size = culName.length();
-            g.drawLine(x,startY,x,h); // Draw X axis.
-            g.drawString(culName, (x-(letterW*size)),h+(startY)); // draw labels.
+            g.drawLine(x,startY,x,height); // Draw X axis.
+            g.drawString(culName, (x-(letterW*size)),height+(startY)); // draw labels.
 
             g.setColor(Color.RED);
             if(ratiosDatum.get(i).type == Axis.ColumnType.NUMERIC){
                 // draw yLabels...
                 int yStartPos = startY;
-                double yValuePosIncreament = h/4;
+                double yValuePosIncreament = height/4;
                 double startYlabel = datum.get(i).MaxMin[0];
                 double labelDecreament =(datum.get(i).MaxMin[0]-datum.get(i).MaxMin[1])/4;
 
@@ -141,14 +146,14 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
                     startYlabel -= labelDecreament;
                     g.drawString(String.valueOf(Math.round(startYlabel*100.0)/100.0), x+2, yStartPos);
                 }
-                g.drawString(String.valueOf(datum.get(i).MaxMin[1]), x+2, h);
+                g.drawString(String.valueOf(datum.get(i).MaxMin[1]), x+2, height);
             }else{
                 Set<String> textCategory = new HashSet<>();
                 for(String ele:ratiosDatum.get(i).stringData){
                     textCategory.add(ele);
                 }
-                double yStartPos = h/(textCategory.size()+1);
-                double yIncreament = h/(textCategory.size()+1);
+                double yStartPos = height/(textCategory.size()+1);
+                double yIncreament = height/(textCategory.size()+1);
 
                 //converting the data for drawing...
                 for(String ele:textCategory){
@@ -163,17 +168,16 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
                 }
             }
             xPoints[i] = x;
-            x+=w/(numOfCul-1);
+            x+=width/(numOfCul-1);
             g.setColor(Color.BLACK);
         }
-        lines.clear();
+
         for(int i=0; i<rowNum; i++){
             CurvedLine cl = new CurvedLine();
-//            points.clear();
             for(int j=0; j<numOfCul; j++) {
                 double point;
                 if(ratiosDatum.get(j).type == Axis.ColumnType.NUMERIC){
-                    point = h - (ratiosDatum.get(j).numberData.get(i) * (h-startY));
+                    point = height - (ratiosDatum.get(j).numberData.get(i) * (height-startY));
                 }else{
                     point = ratiosDatum.get(j).numberData.get(i)*1;
                 }
@@ -183,8 +187,10 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
             lines.add(cl);
         }
 
+        lines.forEach(ele -> ele.draw(g));
+
         for(CurvedLine ele:lines){
-            ele.draw(g);
+            System.out.println(ele.getCurrentState());
         }
 
         if(box != null){
@@ -225,12 +231,33 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
     @Override
     public void mouseDragged(MouseEvent e) {
         box.setFrameFromDiagonal(mouseDown.x, mouseDown.y, e.getX(), e.getY());
+        for(CurvedLine ele: lines){
+            if(ele.getLine().intersects(box)){
+                System.out.println("We found proper lines...");
+                ele.highlihgt();
+            }
+        }
         repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
 
-
+        double minDist = 10;
+        CurvedLine closestLine  = null;
+        for(int i=0; i<lines.size();i++) {
+            double distance = lines.get(i).getDistanceFromPoint(x, y);
+            if(distance < minDist){
+                minDist = distance;
+                closestLine = lines.get(i);
+            }
+        }
+        if(closestLine != null){
+            System.out.println(closestLine.getPoints());
+            closestLine.highlihgt();
+        }
+        repaint();
     }
 }
