@@ -31,7 +31,7 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
         yValues = new ArrayList<>();
         xRatios = new ArrayList<>();
         yRatios = new ArrayList<>();
-        gender = new ArrayList<>();
+        gender = new ArrayList<>(  );
         xLabels = new double[5];
         yLabels = new double[5];
 

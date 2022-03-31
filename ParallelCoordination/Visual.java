@@ -208,8 +208,9 @@ public class Visual extends JPanel implements ActionListener, MouseInputListener
     public void mousePressed(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        mouseDown = new Point(x,y );
+        mouseDown = new Point(x,y);
         box = new Rectangle();
+        repaint();
     }
 
     @Override

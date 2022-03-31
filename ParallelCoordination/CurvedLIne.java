@@ -21,6 +21,7 @@ class CurvedLine {
         line = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
         currentState = State.NORMAL;
     }
+
     public List<Point2D> getPoints(){
         return points;
     }
